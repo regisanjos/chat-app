@@ -1,4 +1,4 @@
-package com.distibuido.chat_app.controllers;
+package com.distribuido.chat_app.controllers;
 
 import com.distribuido.chat_app.models.Message;
 import com.distribuido.chat_app.services.MessageService;
@@ -19,7 +19,7 @@ public class ChatController {
     private final RoomService roomService;
     private final RabbitMQService rabbitMQService;
 
-    /
+
     @Autowired
     public ChatController(MessageService messageService, RoomService roomService, RabbitMQService rabbitMQService) {
         this.messageService = messageService;
@@ -30,41 +30,44 @@ public class ChatController {
 
     @PostMapping("/rooms/{roomId}/messages")
     public ResponseEntity<Message> sendMessage(
-            @PathVariable Long roomId, // ID da sala
-            @RequestBody Message message // Corpo da mensagem enviada
+            @PathVariable Long roomId,
+            @RequestBody Message message
     ) {
 
         if (!roomService.existsById(roomId)) {
-            return ResponseEntity.notFound().build(); // Retorna 404 se a sala não for encontrada
+            return ResponseEntity.notFound().build();
         }
 
 
         if (!MessageValidator.isValidMessage(message)) {
-            return ResponseEntity.badRequest().body(null); // Retorna 400 se a mensagem for inválida
+            return ResponseEntity.badRequest().body(null);
         }
 
 
         message.setRoom(roomService.getRoomById(roomId));
+
         Message savedMessage = messageService.sendMessage(message);
 
 
         rabbitMQService.sendMessage(message.getContent());
 
-        return ResponseEntity.status(201).body(savedMessage); // Retorna a mensagem salva com status 201 (Criado)
+
+        return ResponseEntity.status(201).body(savedMessage);
     }
 
 
     @GetMapping("/rooms/{roomId}/messages")
     public ResponseEntity<List<Message>> getMessagesByRoom(
-            @PathVariable Long roomId // ID da sala
+            @PathVariable Long roomId
     ) {
 
         if (!roomService.existsById(roomId)) {
-            return ResponseEntity.notFound().build(); // Retorna 404 se a sala não for encontrada
+            return ResponseEntity.notFound().build();
         }
 
 
         List<Message> messages = messageService.getMessagesByRoomId(roomId);
-        return ResponseEntity.ok(messages); // Retorna as mensagens com status 200 (OK)
+
+        return ResponseEntity.ok(messages);
     }
 }
