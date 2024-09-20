@@ -1,9 +1,12 @@
 package com.distribuido.chat_app.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.generationType;
 import org.springframework.data.annotation.Id;
 
-import javax.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
