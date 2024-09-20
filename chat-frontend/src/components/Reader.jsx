@@ -1,9 +1,10 @@
 import React from 'react';
+import './Header.css';
 
 const Header = () => {
   return (
-    <header>
-      <h1>Chat App</h1>
+    <header className="header">
+      <h1>Chat-app</h1>
     </header>
   );
 };

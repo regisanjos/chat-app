@@ -1,7 +1,8 @@
 {
   "name": "chat-frontend",
+  "version": "1.0.0",
+  "proxy": "http://localhost:8080",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +13,8 @@
   "dependencies": {
     "axios": "^1.7.7",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
