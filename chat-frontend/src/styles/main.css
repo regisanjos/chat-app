@@ -1,0 +1,80 @@
+/* src/styles/main.css */
+body {
+  font-family: 'Ubuntu Mono', monospace;
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+.login-container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.room-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.room-list li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.room-list li:hover {
+  background-color: #f0f0f0;
+}
+
+.chat-room {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.message-list {
+  height: 300px;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.message-input {
+  display: flex;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.message-input button {
+  padding: 10px;
+  background-color: #333;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+input {
+  padding: 10px;
+  font-size: 14px;
+  margin-right: 10px;
+}
