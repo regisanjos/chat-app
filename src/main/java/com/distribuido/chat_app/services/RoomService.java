@@ -23,38 +23,35 @@ public class RoomService {
         this.roomRepository = roomRepository;
     }
 
+    // Método para verificar se a sala existe pelo ID
+    public boolean existsById(Long id) {
+        return roomRepository.existsById(id);  // Método padrão do JpaRepository
+    }
+
+    // Método para buscar a sala pelo ID (renomeado para getRoomById)
+    public Optional<Room> getRoomById(Long id) {
+        return roomRepository.findById(id);
+    }
 
     public Room createRoom(String roomName) {
-
         if (roomName == null || roomName.trim().isEmpty()) {
             throw new IllegalArgumentException("O nome da sala não pode ser nulo ou vazio.");
         }
-
         Room room = new Room(roomName);
         Room savedRoom = roomRepository.save(room);
         logger.info("Sala criada: {}", roomName);
         return savedRoom;
     }
 
-
-    public Optional<Room> findRoomById(Long id) {
-        return roomRepository.findById(id);
-    }
-
-
     public List<Room> findAllRooms() {
         return roomRepository.findAll();
     }
 
-
     public void addUserToRoom(Room room, User user) {
-
         if (room.getUsers().contains(user)) {
             logger.warn("Usuário já está na sala: {}", user.getUsername());
             return;
         }
-
-
         room.getUsers().add(user);
         roomRepository.save(room);
         logger.info("Usuário {} adicionado à sala {}", user.getUsername(), room.getName());

@@ -18,37 +18,28 @@ public class RoomController {
     private final RoomService roomService;
     private final UserService userService;
 
-
     @Autowired
     public RoomController(RoomService roomService, UserService userService) {
         this.roomService = roomService;
         this.userService = userService;
     }
 
-
     @PostMapping
     public ResponseEntity<Room> createRoom(@RequestParam String roomName) {
-
-        if (roomName == null || roomName.trim().isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Room room = roomService.createRoom(roomName);
-        return ResponseEntity.ok(room);
+        Room room = roomService.createRoom(roomName); // Cria uma nova sala
+        return ResponseEntity.ok(room); // Retorna a sala criada
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<Room> getRoomById(@PathVariable Long id) {
-        Optional<Room> room = roomService.findRoomById(id);
-
+        // Substituído findRoomById por getRoomById
+        Optional<Room> room = roomService.getRoomById(id);
         return room.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
     @PostMapping("/{roomId}/users")
     public ResponseEntity<Void> addUserToRoom(@PathVariable Long roomId, @RequestParam Long userId) {
-        Optional<Room> room = roomService.findRoomById(roomId);
+        Optional<Room> room = roomService.getRoomById(roomId); // Substituído findRoomById por getRoomById
         Optional<User> user = userService.findUserById(userId);
 
         if (room.isPresent() && user.isPresent()) {
@@ -58,7 +49,6 @@ public class RoomController {
             return ResponseEntity.notFound().build();
         }
     }
-
 
     @GetMapping
     public ResponseEntity<List<Room>> getAllRooms() {

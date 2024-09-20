@@ -4,7 +4,6 @@ import com.distribuido.chat_app.models.Message;
 import com.distribuido.chat_app.services.MessageService;
 import com.distribuido.chat_app.services.RabbitMQService;
 import com.distribuido.chat_app.services.RoomService;
-import com.distribuido.chat_app.utils.MessageValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,6 @@ public class ChatController {
     private final RoomService roomService;
     private final RabbitMQService rabbitMQService;
 
-
     @Autowired
     public ChatController(MessageService messageService, RoomService roomService, RabbitMQService rabbitMQService) {
         this.messageService = messageService;
@@ -27,47 +25,37 @@ public class ChatController {
         this.rabbitMQService = rabbitMQService;
     }
 
-
+    // Enviar mensagem para a sala
     @PostMapping("/rooms/{roomId}/messages")
     public ResponseEntity<Message> sendMessage(
             @PathVariable Long roomId,
-            @RequestBody Message message
-    ) {
+            @RequestBody Message message) {
 
+        // Verifica se a sala existe
         if (!roomService.existsById(roomId)) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build(); // Retorna 404 se a sala não for encontrada
         }
 
+        // Define a sala na mensagem
+        message.setRoom(roomService.getRoomById(roomId).orElse(null));
+        Message savedMessage = messageService.sendMessage(message); // Salva a mensagem
+        rabbitMQService.sendMessage(message.getContent());  // Envia a mensagem ao RabbitMQ
 
-        if (!MessageValidator.isValidMessage(message)) {
-            return ResponseEntity.badRequest().body(null);
-        }
-
-
-        message.setRoom(roomService.getRoomById(roomId));
-
-        Message savedMessage = messageService.sendMessage(message);
-
-
-        rabbitMQService.sendMessage(message.getContent());
-
-
-        return ResponseEntity.status(201).body(savedMessage);
+        return ResponseEntity.status(201).body(savedMessage);  // Retorna a mensagem salva com status 201 (Created)
     }
 
-
+    // Obter todas as mensagens da sala
     @GetMapping("/rooms/{roomId}/messages")
     public ResponseEntity<List<Message>> getMessagesByRoom(
-            @PathVariable Long roomId
-    ) {
+            @PathVariable Long roomId) {
 
+        // Verifica se a sala existe
         if (!roomService.existsById(roomId)) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();  // Retorna 404 se a sala não for encontrada
         }
 
-
+        // Obtém as mensagens da sala pelo ID
         List<Message> messages = messageService.getMessagesByRoomId(roomId);
-
-        return ResponseEntity.ok(messages);
+        return ResponseEntity.ok(messages);  // Retorna as mensagens com status 200 (OK)
     }
 }

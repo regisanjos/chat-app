@@ -8,12 +8,10 @@ import com.distribuido.chat_app.services.MessageService;
 import com.distribuido.chat_app.services.RoomService;
 import com.distribuido.chat_app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,14 +25,17 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ChatWebSocketHandler.class);
     private final Map<String, WebSocketSession> sessions = new HashMap<>();
-    private final @NotNull MessagePublisher messagePublisher;
-    private final @NotNull MessageService messageService;
-    private final @NotNull UserService userService;
-    private final @NotNull RoomService roomService;
+
+    private final MessagePublisher messagePublisher;
+    private final MessageService messageService;
+    private final UserService userService;
+    private final RoomService roomService;
 
     @Autowired
-    public ChatWebSocketHandler(@NotNull MessagePublisher messagePublisher, @NotNull MessageService messageService,
-                                @NotNull UserService userService, @NotNull RoomService roomService) {
+    public ChatWebSocketHandler(MessagePublisher messagePublisher,
+                                MessageService messageService,
+                                UserService userService,
+                                RoomService roomService) {
         this.messagePublisher = messagePublisher;
         this.messageService = messageService;
         this.userService = userService;
@@ -65,11 +66,19 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             Long roomId = Long.parseLong(messageParts[2]);  // ID da sala
 
             Optional<User> user = userService.findUserById(userId);
-            Optional<Room> room = roomService.findRoomById(roomId);
+            Optional<Room> room = roomService.getRoomById(roomId);  // Substituído findRoomById por getRoomById
 
             if (user.isPresent() && room.isPresent()) {
-                Message savedMessage = messageService.sendMessage(content, user.get(), room.get());
+                // Criando uma nova instância de Message
+                Message chatMessage = new Message(content, user.get(), room.get());
+
+                // Chamando o método correto para enviar a mensagem
+                Message savedMessage = messageService.sendMessage(chatMessage);
+
+                // Publicando a mensagem via RabbitMQ
                 messagePublisher.sendMessage(savedMessage.getContent());
+
+                // Enviando a mensagem para todos os clientes conectados
                 broadcastMessage(savedMessage.getContent());
             } else {
                 logger.warn("Usuário ou sala não encontrados.");
@@ -83,11 +92,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     private String[] parseMessage(String payload) {
-
+        // Sanitiza e divide a mensagem recebida
         return payload.trim().split(",");
     }
 
-    private void broadcastMessage(String message) throws Exception {
+    public void broadcastMessage(String message) throws Exception {
         for (WebSocketSession session : sessions.values()) {
             if (session.isOpen()) {
                 session.sendMessage(new TextMessage(message));
