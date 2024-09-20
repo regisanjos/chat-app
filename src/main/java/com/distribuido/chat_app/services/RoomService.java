@@ -23,12 +23,12 @@ public class RoomService {
         this.roomRepository = roomRepository;
     }
 
-    // Método para verificar se a sala existe pelo ID
+
     public boolean existsById(Long id) {
         return roomRepository.existsById(id);  // Método padrão do JpaRepository
     }
 
-    // Método para buscar a sala pelo ID (renomeado para getRoomById)
+
     public Optional<Room> getRoomById(Long id) {
         return roomRepository.findById(id);
     }

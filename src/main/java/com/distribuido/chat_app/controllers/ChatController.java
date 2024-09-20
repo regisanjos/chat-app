@@ -25,37 +25,37 @@ public class ChatController {
         this.rabbitMQService = rabbitMQService;
     }
 
-    // Enviar mensagem para a sala
+
     @PostMapping("/rooms/{roomId}/messages")
     public ResponseEntity<Message> sendMessage(
             @PathVariable Long roomId,
             @RequestBody Message message) {
 
-        // Verifica se a sala existe
+
         if (!roomService.existsById(roomId)) {
-            return ResponseEntity.notFound().build(); // Retorna 404 se a sala não for encontrada
+            return ResponseEntity.notFound().build();
         }
 
-        // Define a sala na mensagem
-        message.setRoom(roomService.getRoomById(roomId).orElse(null));
-        Message savedMessage = messageService.sendMessage(message); // Salva a mensagem
-        rabbitMQService.sendMessage(message.getContent());  // Envia a mensagem ao RabbitMQ
 
-        return ResponseEntity.status(201).body(savedMessage);  // Retorna a mensagem salva com status 201 (Created)
+        message.setRoom(roomService.getRoomById(roomId).orElse(null));
+        Message savedMessage = messageService.sendMessage(message);
+        rabbitMQService.sendMessage(message.getContent());
+
+        return ResponseEntity.status(201).body(savedMessage);
     }
 
-    // Obter todas as mensagens da sala
+
     @GetMapping("/rooms/{roomId}/messages")
     public ResponseEntity<List<Message>> getMessagesByRoom(
             @PathVariable Long roomId) {
 
-        // Verifica se a sala existe
+
         if (!roomService.existsById(roomId)) {
-            return ResponseEntity.notFound().build();  // Retorna 404 se a sala não for encontrada
+            return ResponseEntity.notFound().build();
         }
 
-        // Obtém as mensagens da sala pelo ID
+
         List<Message> messages = messageService.getMessagesByRoomId(roomId);
-        return ResponseEntity.ok(messages);  // Retorna as mensagens com status 200 (OK)
+        return ResponseEntity.ok(messages);
     }
 }

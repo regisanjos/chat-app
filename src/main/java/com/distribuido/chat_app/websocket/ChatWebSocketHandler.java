@@ -62,20 +62,20 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             }
 
             String content = messageParts[0];  // Conteúdo da mensagem
-            Long userId = Long.parseLong(messageParts[1]);  // ID do usuário
-            Long roomId = Long.parseLong(messageParts[2]);  // ID da sala
+            Long userId = Long.parseLong(messageParts[1]);
+            Long roomId = Long.parseLong(messageParts[2]);
 
             Optional<User> user = userService.findUserById(userId);
-            Optional<Room> room = roomService.getRoomById(roomId);  // Substituído findRoomById por getRoomById
+            Optional<Room> room = roomService.getRoomById(roomId);
 
             if (user.isPresent() && room.isPresent()) {
-                // Criando uma nova instância de Message
+
                 Message chatMessage = new Message(content, user.get(), room.get());
 
-                // Chamando o método correto para enviar a mensagem
+
                 Message savedMessage = messageService.sendMessage(chatMessage);
 
-                // Publicando a mensagem via RabbitMQ
+
                 messagePublisher.sendMessage(savedMessage.getContent());
 
                 // Enviando a mensagem para todos os clientes conectados

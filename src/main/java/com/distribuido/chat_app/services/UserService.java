@@ -21,22 +21,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-
+    // Método para criar usuário sem senha
     public User createUser(String username) {
-
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty");
         }
-
 
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("Username is already in use");
         }
 
 
-        User user = new User(username, generateDefaultPassword());
-
-
+        User user = new User(username);
         User savedUser = userRepository.save(user);
         logger.info("Usuário criado: {}", username);
 
@@ -51,10 +47,5 @@ public class UserService {
 
     public Optional<User> findUserByUsername(String username) {
         return userRepository.findByUsername(username);
-    }
-
-
-    private String generateDefaultPassword() {
-        return "defaultPassword123"; // Substituir por uma senha gerada dinamicamente
     }
 }

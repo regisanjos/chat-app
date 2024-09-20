@@ -18,12 +18,12 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    // Envia a mensagem para a sala
+
     public Message sendMessage(Message message) {
         return messageRepository.save(message);
     }
 
-    // Obtém todas as mensagens associadas a uma sala
+
     public List<Message> getMessagesByRoomId(Long roomId) {
         Room room = new Room();
         room.setId(roomId);

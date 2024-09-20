@@ -14,22 +14,31 @@ public class UserController {
 
     private final UserService userService;
 
-
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<User> createUser(@RequestParam String username) {
-
         if (username == null || username.trim().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-
         User user = userService.createUser(username);
         return ResponseEntity.ok(user);
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<User> loginUser(@RequestParam String username) {
+        Optional<User> user = userService.findUserByUsername(username);
+
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            return ResponseEntity.status(401).body(null);
+        }
     }
 
 
