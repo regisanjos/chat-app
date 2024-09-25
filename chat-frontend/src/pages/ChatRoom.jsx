@@ -7,7 +7,7 @@ const ChatRoom = ({ room, user, onExitRoom }) => {
 
     useEffect(() => {
 
-    const ws = new WebSocket(`ws://189.8.205.54:8080/ws/chat?room=${room}&user=${user.username}`);
+    const ws = new WebSocket(`ws://localhost:8080/ws/chat?room=${room}&user=${user.username}`);
 
     ws.onmessage = (event) => {
       //  uma mensagem é recebida do servidor, ela é adicionada à lista de mensagens
