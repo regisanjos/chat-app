@@ -24,7 +24,10 @@ import java.util.Optional;
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ChatWebSocketHandler.class);
+
+    // associar sessões WebSocket a suas respectivas salas
     private final Map<String, WebSocketSession> sessions = new HashMap<>();
+    private final Map<String, String> sessionToRoom = new HashMap<>(); // Armazena qual sala a sessão pertence
 
     private final MessagePublisher messagePublisher;
     private final MessageService messageService;
@@ -69,17 +72,16 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             Optional<Room> room = roomService.getRoomById(roomId);
 
             if (user.isPresent() && room.isPresent()) {
+                // Associar a sessão à sala
+                sessionToRoom.put(session.getId(), room.get().getName());
 
                 Message chatMessage = new Message(content, user.get(), room.get());
-
-
                 Message savedMessage = messageService.sendMessage(chatMessage);
-
 
                 messagePublisher.sendMessage(savedMessage.getContent());
 
-                // Enviando a mensagem para todos os clientes conectados
-                broadcastMessage(savedMessage.getContent());
+                //  mensagem para todos os clientes da mesma sala
+                broadcastMessageToRoom(savedMessage.getContent(), room.get().getName());
             } else {
                 logger.warn("Usuário ou sala não encontrados.");
                 session.sendMessage(new TextMessage("Erro: Usuário ou sala não encontrados."));
@@ -92,13 +94,17 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     private String[] parseMessage(String payload) {
-        // Sanitiza e divide a mensagem recebida
-        return payload.trim().split(",");
+
+          return payload.trim().split(",");
     }
 
-    public void broadcastMessage(String message) throws Exception {
-        for (WebSocketSession session : sessions.values()) {
-            if (session.isOpen()) {
+    //   mensagem para todos os clientes da mesma sala
+    public void broadcastMessageToRoom(String message, String roomName) throws Exception {
+        for (Map.Entry<String, WebSocketSession> entry : sessions.entrySet()) {
+            WebSocketSession session = entry.getValue();
+            String sessionRoom = sessionToRoom.get(entry.getKey());
+
+            if (session.isOpen() && roomName.equals(sessionRoom)) {
                 session.sendMessage(new TextMessage(message));
             }
         }
@@ -107,6 +113,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, org.springframework.web.socket.CloseStatus status) throws Exception {
         sessions.remove(session.getId());
+        sessionToRoom.remove(session.getId());
         logger.info("Conexão fechada: {}", session.getId());
     }
 }

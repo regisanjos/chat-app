@@ -8,9 +8,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class WebController {
 
 
-    @GetMapping(value = "/{path:[^\\.]*}")
-    @ResponseBody
+    @GetMapping("/{path:[^\\.]*}")
     public String redirect() {
-        return "index.html";
+        return "forward:/index.html";
     }
 }

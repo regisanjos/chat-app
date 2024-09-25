@@ -21,7 +21,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // Método para criar usuário sem senha
+    // criar usuário sem senha
     public User createUser(String username) {
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty");

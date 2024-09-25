@@ -1,0 +1,154 @@
+body,html{
+margin:0;
+padding:0;
+height:100%;
+font-family:
+DejaVu Sans,sans-serif;
+display:flex;
+justify-content:center;
+align-items:center;
+background-color:#d3d3d3;
+color:#000
+}
+.app-container{
+width:100%;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+height:100vh;
+background-color:#f7f7f7
+}
+.login-page{
+width:100%;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+height:100vh
+}
+.login-page form{
+background-color:#e6e6e6;
+padding:20px;
+border-radius:4px;
+border:1px solid #a9a9a9;
+max-width:350px;
+width:100%
+}
+.login-page input{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+border:1px solid #808080;
+background-color:#f0f0f0;
+border-radius:2px}
+.login-page button{
+width:100%;
+padding:10px;
+background-color:#4d4d4d;
+color:#fff;border:1px solid #808080;
+cursor:pointer;
+border-radius:4px;
+transition:background-color .3s ease
+}
+.login-page button:hover{
+background-color:#333
+}
+.chat-room-list{
+width:100%;
+max-width:600px;
+margin:0 auto;
+text-align:center
+}
+.chat-room-list h2{
+margin-bottom:20px;
+font-size:24px;
+color:#333
+}
+.chat-room-list ul{
+list-style:none;
+padding:0;
+margin:0
+}
+.chat-room-list li{
+padding:15px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:4px;
+background-color:#fff;
+cursor:pointer;
+transition:background-color .3s ease
+}
+.chat-room-list li:hover{
+background-color:#e0e0e0
+}
+.chat-room{
+width:100%;
+max-width:600px;
+margin:20px auto;
+text-align:center
+}
+.chat-room h2{
+font-size:22px;
+color:#333}
+.chat-room .messages{
+border:1px solid #ccc;
+padding:10px;
+height:300px;
+overflow-y:scroll;
+background-color:#fff;
+margin-bottom:15px
+}
+.chat-room .messages p{
+text-align:left;
+padding:5px;
+border-bottom:1px solid #eee
+}
+.chat-room input{
+width:100%;
+padding:10px;
+margin-top:10px;
+border:1px solid #808080;
+background-color:#f0f0f0;
+border-radius:4px
+}
+.chat-room button{
+width:100%;
+padding:10px;
+background-color:#4d4d4d;
+color:#fff;
+border:none;
+margin-top:10px;
+cursor:pointer;
+transition:background-color .3s ease
+}
+.chat-room button:hover{
+background-color:#333
+}
+.button-container{
+display:flex;
+gap:10px;
+margin-top:20px
+}
+.logout-button,.exit-room-button,.back-to-start-button{
+width:150px;
+padding:10px;
+background-color:#4d4d4d;
+color:#fff;
+border:1px solid #808080;
+cursor:pointer;
+border-radius:4px;
+transition:background-color .3s ease
+}
+.logout-button:hover,.exit-room-button:hover,.back-to-start-button:hover{
+background-color:#333
+}
+.footer{
+background-color:#4d4d4d;
+color:#fff;
+text-align:center;
+padding:10px 0;
+position:fixed;
+width:100%;
+bottom:0
+}
